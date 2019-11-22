@@ -4,21 +4,24 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class TestCommand extends Command
+/**
+ * 爬虫任务调度
+ */
+class CrawlerCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'test:test';
+    protected $signature = 'crawler:run {crawler? : The crawler select} {--other= : Otehr options}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Crawler Run Kernel';
 
     /**
      * Create a new command instance.
@@ -37,8 +40,9 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        //
-        echo '123';
-        sleep(10);
+        //逻辑处理
+        $command = $this->arguments();
+        $options = $this->options();
+        dd($options);
     }
 }

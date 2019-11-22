@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
-        \App\console\Commands\TestCommand::class
+        \App\console\Commands\CrawlerCommand::class
     ];
 
     /**
@@ -28,9 +28,9 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         #关键任务调度器
-        $len = 4;
+        $len = 1;
         for ($i = 0; $i < $len; $i++) {
-            $schedule->command('test:test')->everyMinute()->runInBackground();
+            $schedule->command('crawler:run')->everyMinute()->runInBackground();
         }
     }
 
