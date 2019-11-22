@@ -20,6 +20,8 @@ class CrawlerMenuSeeder extends Seeder
         $menu_table = config('admin.database.menu_table');
         DB::table($menu_table)->insert([
             'parent_id' => 0,
+            'order' => 1,
+            'title' => 'Cralwer Menu',
             'icon' => 'Menu',
             'uri' => ''
         ]);

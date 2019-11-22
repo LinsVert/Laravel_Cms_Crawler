@@ -43,6 +43,10 @@ class CrawlerCommand extends Command
         //逻辑处理
         $command = $this->arguments();
         $options = $this->options();
-        dd($options);
+        if ($command['crawler'] === null) {
+            echo 'Empty Crawler!' . PHP_EOL;
+            return false;
+        }
+        //分配任务 todo
     }
 }

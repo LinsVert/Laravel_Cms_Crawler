@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Model\CrawlerModel;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,7 +14,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
         \App\console\Commands\CrawlerCommand::class
     ];
 
@@ -28,9 +28,11 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         #关键任务调度器
-        $len = 1;
-        for ($i = 0; $i < $len; $i++) {
-            $schedule->command('crawler:run')->everyMinute()->runInBackground();
+        $list = CrawlerModel::where('isValid', CrawlerModel::VALID_FLAG)->get();
+        foreach ($list as $key => $value) {
+            //频率 或其它参数 todo
+            $command = 'crawler:run ' . $value->id;
+            $schedule->command($command);
         }
     }
 
