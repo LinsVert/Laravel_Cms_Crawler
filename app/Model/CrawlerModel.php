@@ -16,4 +16,8 @@ class CrawlerModel extends Model
     //是否重复
     
     protected $table = 'crawler';
+
+    public function crawler_config(){
+        return $this->hasOne('App\Model\CrawlerConfigModel', 'crawler_config_id', 'id');
+    }
 }
