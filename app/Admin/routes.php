@@ -12,4 +12,11 @@ Route::group([
 
     $router->get('/', 'HomeController@index')->name('admin.home');
 
+    //Crawler Router
+    Route::group(['prefix' => 'crawler'], function ($router) {
+        $router->resource('task', Crawler\TaskController::class);
+        $router->resource('config', Crawler\ConfigController::class);
+        $router->resource('log', Crawler\LogController::class);
+    });
+
 });
