@@ -18,6 +18,6 @@ class CrawlerModel extends Model
     protected $table = 'crawler';
 
     public function crawler_config(){
-        return $this->hasOne('App\Model\CrawlerConfigModel', 'crawler_config_id', 'id');
+        return $this->hasOne('App\Model\CrawlerConfigModel', 'id', 'config_id');
     }
 }

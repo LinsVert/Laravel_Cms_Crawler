@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Services\CrawlerService;
 
 /**
  * 爬虫任务调度
@@ -48,5 +49,6 @@ class CrawlerCommand extends Command
             return false;
         }
         //分配任务 todo
+        CrawlerService::run($command['crawler']);
     }
 }

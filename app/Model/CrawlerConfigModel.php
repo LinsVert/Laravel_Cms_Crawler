@@ -10,4 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 class CrawlerConfigModel extends Model
 {
     protected $table = 'crawler_config';
+
+    protected $casts = [
+        'content_url_rule' => 'json',
+        'content_rule' => 'json',
+        'list_url_rule' => 'json',
+        'cookies' => 'json',
+    ];
 }

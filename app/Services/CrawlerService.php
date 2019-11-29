@@ -16,30 +16,37 @@ class CrawlerService {
     public static function run($crawler)
     {
         $crawler = CrawlerModel::find((int)$crawler);
-        if (!crawler) {
+        if (!$crawler) {
+            return false;
+        }
+        //校验频率
+        if ($crawler->isLoop == 0 && $crawler->runTimes >= 1) {
             return false;
         }
         $crawler_config = $crawler->crawler_config;
         if (!$crawler_config) {
             return false;
         }
-        self::run($crawler_config);
+        self::init_crawler($crawler_config);
+        self::start();
     }
 
-    public static function content()
+    public static function content_crawler($dispath)
     {
-
+        self::init_crawler($dispath['crawlerConfig']);
+        self::content($dispath['url']);
     }
 
-    public static function list()
+    public static function list_crawler($dispath)
     {
-
+        self::init_crawler($dispath['crawlerConfig']);
+        self::list($dispath['url']);
     }
 
-    public static function parse()
-    {
-
-    }
+    // public static function parse()
+    // {
+    //     self::parse();
+    // }
 
 
 

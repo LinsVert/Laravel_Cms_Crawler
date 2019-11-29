@@ -7,7 +7,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use App\Model\CrawlerModel;
-
+use App\Model\CrawlerConfigModel;
 class TaskController extends AdminController
 {
      /**
@@ -27,9 +27,38 @@ class TaskController extends AdminController
         $grid = new Grid(new CrawlerModel);
 
         $grid->column('id', __('ID'))->sortable();
+        $grid->column('name', 'Task Name');
+        $grid->crontab();
+        $grid->crawler_config()->name('Crawler Config Name');
+        $grid->isLoop()->display(function ($value) {
+            if ($value == 1) {
+                return 'Loop';
+            }
+            if ($value == 0) {
+                return 'Once';
+            }
+            return $value;
+        });
+        $grid->autoProxy()->display(function ($value) {
+            if ($value == 1) {
+                return 'Enable';
+            }
+            if ($value == 0) {
+                return 'Disable';
+            }
+            return $value;
+        });
+        $grid->isValid()->display(function ($value) {
+            if ($value == 1) {
+                return 'Enable';
+            }
+            if ($value == 0) {
+                return 'Disable';
+            }
+            return $value;
+        });
         $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
-
+        // $grid->column('updated_at', __('Updated at'));
         return $grid;
     }
 
@@ -60,6 +89,17 @@ class TaskController extends AdminController
         $form = new Form(new CrawlerModel);
 
         $form->display('id', __('ID'));
+        $form->text('name', 'Task Name');
+        //todo
+        $form->text('crontab', '调度周期');
+        $form->radio('isLoop', '循环调度')->options([0 => 'Once', 1 => 'Loop'])->default(1);
+        $form->radio('autoProxy', '自动代理')->options([0 => 'Disabled', 1 => 'Enabled'])->default(0);
+        $form->radio('isValid', '是否启用')->options([0 => 'Disabled', 1 => 'Enabled'])->default(1);
+        $form->text('logPath', '日志地址')->placeholder('默认是/log/taskId/taskName.log');
+        $form->select('config_id', 'Crawler Config')->options(CrawlerConfigModel::all()->pluck('name', 'id')->toArray());
+
+
+
         $form->text('created_at');
         $form->text('updated_at');
 

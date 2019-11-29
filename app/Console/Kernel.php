@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
         foreach ($list as $key => $value) {
             //频率 或其它参数 todo
             $command = 'crawler:run ' . $value->id;
-            $schedule->command($command);
+            $schedule->command($command)->crontab($value->crontab);
         }
     }
 
