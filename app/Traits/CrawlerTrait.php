@@ -7,6 +7,7 @@ use App\Model\CrawlerConfigModel;
 use App\Model\CrawlerResultCacheModel;
 use DiDom\Document;
 use DiDom\Query;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * crawler trait
@@ -23,7 +24,7 @@ trait CrawlerTrait
     protected static $host = '';
     protected static $queue_list = 'crawler_list';
     protected static $queue_content = 'crawler_content';
-    
+
     /**
      * 命令调度默认入口 用于基本调度
      */
@@ -52,7 +53,7 @@ trait CrawlerTrait
         $response = self::getInstance()::request($url);
         if ($response->getStatusCode() != self::$success_code) {
             echo "Response Status Code Not be 200" . PHP_EOL;
-            echo "Request Url: " . $value . PHP_EOL;
+            echo "Request Url: " . $url . PHP_EOL;
             echo "Response Body : " . (string) $response->getBody() . PHP_EOL;
             return false;
         }
@@ -95,17 +96,19 @@ trait CrawlerTrait
         }
         echo "Cotent Collect Success : " . $url . ' ' . date('Y-m-d H:i:s') . PHP_EOL;
     }
-    
+
     /**
      * list url rule
-     */ 
+     * @param $url
+     * @return bool
+     */
     public static function list($url)
     {
         self::getInstance()::init();
         $response = self::getInstance()::request($url);
         if ($response->getStatusCode() != self::$success_code) {
             echo "Response Status Code Not be 200" . PHP_EOL;
-            echo "Request Url: " . $value . PHP_EOL;
+            echo "Request Url: " . $url . PHP_EOL;
             echo "Response Body : " . (string) $response->getBody() . PHP_EOL;
             return false;
         }
@@ -115,8 +118,12 @@ trait CrawlerTrait
 
     /**
      * 解析与分配
+     * @param Response $response
+     * @param string $type
+     * @param string $from
+     * @return bool
      */
-    public static function parse(\GuzzleHttp\Psr7\Response $response, $type = 'content', $from = '')
+    public static function parse(Response $response, $type = 'content', $from = '')
     {
         $contents = $response->getBody()->getContents();
         $document = new Document($contents);
@@ -145,7 +152,7 @@ trait CrawlerTrait
                     CrawlerQueue::dispatch($dispatch)->onQueue(self::$queue_content);
                 }
             }
-        }    
+        }
     }
 
     public static function check_list_url($url) {
@@ -226,7 +233,7 @@ trait CrawlerTrait
     {
         //解析来源地址
         $parse_url = @parse_url($from);
-        if (empty($parse_url['scheme']) || empty($parse_url['host'])) 
+        if (empty($parse_url['scheme']) || empty($parse_url['host']))
         {
             return false;
         }
@@ -301,7 +308,7 @@ trait CrawlerTrait
             }
         }
         $url = $scheme . '://' . $url;
-        return $url;     
+        return $url;
     }
 
     public static function init_crawler($crawlerConfig) {
