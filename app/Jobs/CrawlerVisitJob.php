@@ -40,9 +40,12 @@ class CrawlerVisitJob implements ShouldQueue
         $visitUrls = [];
         if (! $this->visit_urls) {
             $visitUrls = $this->visit->visit_urls;
+        } else {
+            $visitUrls = $this->visit_urls;
         }
-        if ($visitUrls) {
-            echo '123';
-        }
+        $visit = $this->visit;
+        collect($visitUrls)->map(function ($value) use ($visit) {
+
+        });
     }
 }

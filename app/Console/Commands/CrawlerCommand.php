@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Jobs\CrawlerVisitJob;
+use App\Models\CrCrawlerVisitModel;
+use App\Utils\QueueCommon;
 use Illuminate\Console\Command;
 
 /**
@@ -41,7 +43,9 @@ class CrawlerCommand extends Command
      */
     public function handle()
     {
-        CrawlerVisitJob::dispatch(1);
+        $visit = CrCrawlerVisitModel::find(1);
+        QueueCommon::dispatch(CrawlerVisitJob::class, [$visit]);
+        exit;
         //逻辑处理
         $command = $this->arguments();
         $options = $this->options();
