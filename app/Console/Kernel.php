@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Models\CrCrawlerTaskModel;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,10 +29,15 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         #关键任务调度器
-        $len = 1;
-        for ($i = 0; $i < $len; $i++) {
+        $task = CrCrawlerTaskModel::all();
+        foreach ($task as $value) {
+
             $schedule->command('crawler:run')->everyMinute()->runInBackground();
         }
+    }
+
+    protected function checkRun(CrCrawlerTaskModel $task) {
+
     }
 
     /**

@@ -19,6 +19,7 @@ class CreateCrawlerTaskTable extends Migration
             $table->integer('begin_visit_id')->default(0)->comment('start url');
             $table->string('crontab')->nullable()->comment('run times');
             $table->tinyInteger('flow_robot')->default(1)->comment('flow crawler protocol');
+            $table->string('task_queue')->default('');
             $table->softDeletes();
             $table->timestamps();
         });

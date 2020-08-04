@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\CrawlerVisitJob;
 use Illuminate\Console\Command;
 
 /**
@@ -40,6 +41,7 @@ class CrawlerCommand extends Command
      */
     public function handle()
     {
+        CrawlerVisitJob::dispatch(1);
         //逻辑处理
         $command = $this->arguments();
         $options = $this->options();
