@@ -14,6 +14,8 @@ Route::group([
     $router->group(['prefix' => 'crawler', 'namespace' => 'Crawler'], function (Router $router) {
         $router->get('/', 'HomeController@index')->name('crawler.home');
         $router->resource('task', 'TaskController');
+        $router->resource('visit', 'VisitController');
+        $router->resource('content', 'ContentController');
     });
 
 });

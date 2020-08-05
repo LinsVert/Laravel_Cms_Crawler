@@ -35,6 +35,7 @@ class TaskController extends AdminController
             }
             return "<span class='label label-info'>{$value}</span>";
         });
+        $grid->column('crontab', 'Crontab');
         $states = [
             'on'  => ['value' => 1, 'text' => 'Allow', 'color' => 'success'],
             'off' => ['value' => 0, 'text' => 'Not Allow', 'color' => 'danger'],
@@ -73,8 +74,6 @@ class TaskController extends AdminController
         $form = new Form(new CrCrawlerTaskModel());
 
         $form->display('id', __('ID'));
-        $form->display('created_at', __('Created At'));
-        $form->display('updated_at', __('Updated At'));
         $form->text('task_name', 'Task Name');
         $form->select('begin_visit_id', 'Begin Visit')->options(CrCrawlerVisitModel::all()->pluck('visit_name', 'id'));
         $queue = [

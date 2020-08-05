@@ -15,4 +15,9 @@ class CrCrawlerVisitModel extends Model
     protected $casts = [
         'visit_urls' => 'json',
     ];
+
+    public function visitHasContent()
+    {
+        return $this->belongsToMany(CrCrawlerContentModel::class,CrCrawlerVisitHasContentModel::class, 'visit_id', 'content_id', 'id', 'id');
+    }
 }
