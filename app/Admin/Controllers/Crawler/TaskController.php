@@ -5,9 +5,13 @@ namespace App\Admin\Controllers\Crawler;
 
 use App\Models\CrCrawlerTaskModel;
 use App\Models\CrCrawlerVisitModel;
+use App\Services\CrawlerTaskService;
+use Cron\CronExpression;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
+use Illuminate\Support\Arr;
+use Illuminate\Support\MessageBag;
 
 class TaskController extends AdminController
 {
@@ -35,7 +39,19 @@ class TaskController extends AdminController
             }
             return "<span class='label label-info'>{$value}</span>";
         });
-        $grid->column('crontab', 'Crontab');
+        $grid->column('crontab', 'Crontab')->display(function ($crontab) {
+            if (!$crontab) {
+                return null;
+            }
+            $display = '';
+            $keys = ['primary', 'success', 'info', 'warning',  'danger'];
+            foreach ($crontab as $key =>  $value) {
+                $randoms = $key;
+                $_display = Arr::get($value, 'func') . ' ' . Arr::get($value, 'value_1') . ' ' . Arr::get($value, 'value_2');
+                $display .= "<span class='label label-{$keys[$randoms]}'>$_display</span> &nbsp;";
+            }
+            return $display;
+        });
         $states = [
             'on'  => ['value' => 1, 'text' => 'Allow', 'color' => 'success'],
             'off' => ['value' => 0, 'text' => 'Not Allow', 'color' => 'danger'],
@@ -81,7 +97,14 @@ class TaskController extends AdminController
             'mysql' => 'mysql',
         ];
         $form->select('task_queue', 'Used Queue')->options($queue);
-        $form->text('crontab', 'Crontab')->help('See laravel schedule');
+//        $form->text('crontab', 'Crontab')->help('See laravel schedule');
+        $functions = CrawlerTaskService::CRONTAB_LIST;
+        $form->table('crontab', 'Crontab', function (Form\NestedForm $form) use ($functions) {
+            $form->select('func', 'Function')->options($functions)->required();
+            $form->text('value_1', 'param1');
+            $form->text('value_2', 'param2');
+
+        })->help('See laravel schedule');
         $form->switch('flow_robot', 'Allow Robot');
         $form->switch('status', 'Status');
         $form->footer(function ($footer) {
@@ -101,6 +124,27 @@ class TaskController extends AdminController
             // 去掉`继续创建`checkbox
             $footer->disableCreatingCheck();
 
+        });
+        $form->saving(function ($form) {
+            $data = $form->crontab;
+            $data = array_values($data);
+            $error = new MessageBag();
+            foreach ($data as $value) {
+                if ($value['func'] == 'cron') {
+                    $value1 = Arr::get($value, 'value_1');
+                    if (!$value1) {
+                        $error->add('title', 'Save Failed');
+                        $error->add('message', 'crontab param1 not be null');
+                        return back()->with(compact('error'));
+                    }
+                    if (!CronExpression::isValidExpression($value1)) {
+                        $error->add('title', 'Save Failed');
+                        $error->add('message', 'crontab param1 not be valid');
+                        return back()->with(compact('error'));
+                    }
+                }
+            }
+            return null;
         });
         return $form;
     }
