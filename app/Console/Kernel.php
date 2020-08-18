@@ -27,16 +27,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
         #关键任务调度器
         CrawlerTaskService::initTaskRun($schedule);
-        dd(count($schedule->events()));
     }
 
-    protected function checkRun(CrCrawlerTaskModel $task) {
-
-    }
 
     /**
      * Register the commands for the application.

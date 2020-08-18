@@ -37,25 +37,33 @@ class CrawlerTaskService
         'weekly' => 'weekly',
         'weeklyOn' => 'weeklyOn'
     ];
+    public $id = null;
+    public  function __construct($id = 0)
+    {
+        $this->id = $id;
+    }
+
     public function run($taskId) {
         $task = CrCrawlerTaskModel::find($taskId);
         if (!$task) {
             echo 'task not find.' . PHP_EOL;
             return false;
         }
+        echo "run in this case {$taskId}" . PHP_EOL;
     }
 
     public static function initTaskRun(Schedule $schedule) {
         $task = CrCrawlerTaskModel::where('status', 1)->where('run_status', '!=', 2)->get();
         foreach ($task as $value) {
             $crontab = $value->crontab;
-            $event = $schedule->command("crawler:run {$value->id} --option=todo");
+            $event = $schedule->command("crawler:run {$value->id} --other=todo");
             self::transformCrontab($crontab, $event);
+            $event->appendOutputTo(storage_path('logs/test.log'));
+            $event->withoutOverlapping();
         }
         foreach ($schedule->events() as $value) {
-            echo $value->command . PHP_EOL . $value->expression . PHP_EOL;
+            echo $value->command . ' | '. $value->expression . PHP_EOL;
         }
-        exit;
     }
 
     public static function transformCrontab($crontab, Event $event = null) {

@@ -19,3 +19,7 @@
  */
 
 Encore\Admin\Form::forget(['map', 'editor']);
+
+Encore\Admin\Admin::css('/xterm/xterm.min.css');
+Encore\Admin\Admin::js('/xterm/xterm.min.js');
+Encore\Admin\Admin::js('/xterm/fit.min.js');
